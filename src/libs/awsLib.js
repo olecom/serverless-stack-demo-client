@@ -9,6 +9,8 @@ export async function invokeApig(
     queryParams = {},
     body }, userToken) {
 
+  return {}
+
   await getAwsCredentials(userToken);
 
   const signedRequest = sigV4Client

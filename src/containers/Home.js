@@ -7,6 +7,12 @@ import {
 } from 'react-bootstrap';
 import { invokeApig } from '../libs/awsLib';
 import './Home.css';
+import config from '../config.js';
+import GraphiQL from 'graphiql';
+import fetch from 'isomorphic-fetch';
+import 'graphiql/graphiql.css'
+
+const title = process.env.REACT_APP_TCM_TITLE || 'Scratch - A simple note taking app';
 
 class Home extends Component {
 
@@ -20,6 +26,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
+    document.title = title;
     if (this.props.userToken === null) {
       return;
     }
@@ -69,7 +76,7 @@ class Home extends Component {
     return (
       <div className="lander">
         <h1>Scratch</h1>
-        <p>A simple note taking app</p>
+        <p>{title}</p>
         <div>
           <Link to="/login" className="btn btn-info btn-lg">Login</Link>
           <Link to="/signup" className="btn btn-success btn-lg">Signup</Link>
@@ -78,16 +85,28 @@ class Home extends Component {
     );
   }
 
-  renderNotes() {
-    return (
-      <div className="notes">
-        <PageHeader>Your Notes</PageHeader>
-        <ListGroup>
-          { ! this.state.isLoading
-            && this.renderNotesList(this.state.notes) }
-        </ListGroup>
-      </div>
-    );
+  graphQLFetcher(graphQLParams) {
+    return fetch(config.graphqlURL, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'foobar' },
+      body: JSON.stringify(graphQLParams),
+    }).then(function (response) {
+      return response.json();
+    });
+  }
+
+  renderGraphiQL() {
+    var q = `# default query
+{
+  policy {
+    _id
+  }
+}`
+    return <GraphiQL
+      fetcher={this.graphQLFetcher}
+      response='{"data":{"policy":{"_id":"c1ac5bde-9e2c-45d5-b72b-a5ac691944ea"}}}'
+      defaultQuery={q}
+      />;
   }
 
   render() {
@@ -95,7 +114,7 @@ class Home extends Component {
       <div className="Home">
         { this.props.userToken === null
           ? this.renderLander()
-          : this.renderNotes() }
+          : this.renderGraphiQL() }
       </div>
     );
   }

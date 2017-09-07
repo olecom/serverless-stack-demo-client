@@ -4,9 +4,10 @@ export default {
     BUCKET: 'notes-app-uploads'
   },
   apiGateway: {
-    URL: process.env.REACT_APP_TCM_API || 'https://localhost:3000/graphql',
+    URL: 'https://localhost:3000/',
     REGION: 'eu-west-1',
   },
+  graphqlURL: process.env.REACT_APP_TCM_API || 'https://localhost:3000/graphql',
   cognito: {
     REGION: 'eu-west-1',
     IDENTITY_POOL_ID: 'us-east-1:000000', // is not used
