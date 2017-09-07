@@ -33,7 +33,7 @@ class App extends Component {
       this.setState({isLoadingUserToken: false});
       return;
     }
-
+    console.log('currentUser', currentUser)
     try {
       const userToken = await this.getUserToken(currentUser);
       this.updateUserToken(userToken);
